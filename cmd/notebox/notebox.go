@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/michieldewilde/note_box/pkg/http/graphql"
+	"github.com/michieldewilde/notebox/pkg/http/graphql"
 )
 
 const (

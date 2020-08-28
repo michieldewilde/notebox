@@ -1,4 +1,4 @@
-module github.com/michieldewilde/note_box
+module github.com/michieldewilde/notebox
 
 go 1.15
 
