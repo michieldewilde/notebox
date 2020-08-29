@@ -10,7 +10,7 @@ func NewSchema() (*graphql.Schema, error) {
 			Name: "Query",
 			Fields: graphql.Fields{
 				"note": &graphql.Field{
-					Type: UserType(),
+					Type: NoteType(),
 					Args: graphql.FieldConfigArgument{
 						"id": &graphql.ArgumentConfig{
 							Type: graphql.String,
@@ -19,8 +19,8 @@ func NewSchema() (*graphql.Schema, error) {
 					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 						return &note{
 							ID:      "test",
-							title:   "title",
-							content: "content",
+							Title:   "title",
+							Content: "content",
 						}, nil
 					},
 				},

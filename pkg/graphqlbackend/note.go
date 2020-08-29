@@ -4,13 +4,15 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
+// handles all graphql and services logic
+
 type note struct {
 	ID      string `json:"id"`
-	title   string `json:"title"`
-	content string `json:"content"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
-func UserType() *graphql.Object {
+func NoteType() *graphql.Object {
 	return graphql.NewObject(
 		graphql.ObjectConfig{
 			Name: "Note",

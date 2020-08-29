@@ -40,7 +40,8 @@ func run(stdout io.Writer) error {
 }
 
 func (s *server) registerRoutes() {
-	s.router.HandleFunc("/api", s.handleAPI())
+	s.router.HandleFunc("/api", s.handleAPI()).Methods("POST")
+	s.router.Handle("/graphiql", s.handleGraphiql("/api"))
 }
 
 func (s *server) registerSchema() error {
@@ -56,6 +57,10 @@ func (s *server) registerSchema() error {
 
 func (s *server) handleAPI() http.HandlerFunc {
 	return graphqlbackend.Handle(s.schema)
+}
+
+func (s *server) handleGraphiql(r string) http.Handler {
+	return graphqlbackend.HandleGraphiql(r)
 }
 
 func (s *server) listenAndServe(p int) error {
