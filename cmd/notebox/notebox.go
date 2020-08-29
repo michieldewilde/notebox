@@ -21,6 +21,7 @@ type server struct {
 	schema *graphql.Schema
 }
 
+// TODO: parse port flag
 func main() {
 	if err := run(os.Stdout); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
@@ -36,7 +37,7 @@ func run(stdout io.Writer) error {
 	s.registerSchema()
 	s.registerRoutes()
 
-	return s.listenAndServe(8080)
+	return s.listenAndServe(80)
 }
 
 func (s *server) registerRoutes() {
@@ -64,7 +65,7 @@ func (s *server) handleGraphiql(r string) http.Handler {
 }
 
 func (s *server) listenAndServe(p int) error {
-	addr := fmt.Sprintf("127.0.0.1:%d", p)
+	addr := fmt.Sprintf("0.0.0.0:%d", p)
 	srv := &http.Server{
 		Handler:      s.router,
 		Addr:         addr,

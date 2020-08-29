@@ -4,7 +4,8 @@ GOBUILD=$(GOCMD) build
 GORUN=$(GOCMD) run
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
-GOGET=$(GOCMD) get
+GOGET=$(GOCMD)
+GOINSTAL=$(GOCMD) install
 BINARY_NAME=notebox
 
 .PHONY: all
@@ -24,3 +25,9 @@ test:
 
 run:
 				$(GORUN) cmd/notebox/notebox.go
+
+get:
+				$(GOGET)  -d -v ./...
+
+install:
+				$(GOINSTALL)  -d -v ./...
