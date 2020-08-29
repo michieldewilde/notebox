@@ -5,9 +5,11 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/michieldewilde/notebox/pkg/http/graphql"
+	"github.com/graphql-go/graphql"
+	"github.com/michieldewilde/notebox/pkg/graphqlbackend"
 )
 
 const (
@@ -16,6 +18,7 @@ const (
 
 type server struct {
 	router *mux.Router
+	schema *graphql.Schema
 }
 
 func main() {
@@ -30,15 +33,41 @@ func run(stdout io.Writer) error {
 		router: mux.NewRouter(),
 	}
 
+	s.registerSchema()
 	s.registerRoutes()
 
-	return http.ListenAndServe("localhost:8080", s.router)
+	return s.listenAndServe(8080)
 }
 
 func (s *server) registerRoutes() {
 	s.router.HandleFunc("/api", s.handleAPI())
 }
 
+func (s *server) registerSchema() error {
+	schema, err := graphqlbackend.NewSchema()
+
+	if err != nil {
+		return err
+	}
+
+	s.schema = schema
+	return nil
+}
+
 func (s *server) handleAPI() http.HandlerFunc {
-	return graphql.Handle()
+	return graphqlbackend.Handle(s.schema)
+}
+
+func (s *server) listenAndServe(p int) error {
+	addr := fmt.Sprintf("127.0.0.1:%d", p)
+	srv := &http.Server{
+		Handler:      s.router,
+		Addr:         addr,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	fmt.Printf("Listening on: %v\n", addr)
+
+	return srv.ListenAndServe()
 }
