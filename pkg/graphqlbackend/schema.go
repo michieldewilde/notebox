@@ -5,17 +5,34 @@ import (
 )
 
 func NewSchema() (*graphql.Schema, error) {
-	fields := graphql.Fields{
-		"hello": &graphql.Field{
-			Type: graphql.String,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				return "world", nil
+	queryType := graphql.NewObject(
+		graphql.ObjectConfig{
+			Name: "Query",
+			Fields: graphql.Fields{
+				"note": &graphql.Field{
+					Type: UserType(),
+					Args: graphql.FieldConfigArgument{
+						"id": &graphql.ArgumentConfig{
+							Type: graphql.String,
+						},
+					},
+					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+						return &note{
+							ID:      "test",
+							title:   "title",
+							content: "content",
+						}, nil
+					},
+				},
 			},
 		},
-	}
-	rootQuery := graphql.ObjectConfig{Name: "RootQuery", Fields: fields}
-	schemaConfig := graphql.SchemaConfig{Query: graphql.NewObject(rootQuery)}
-	schema, err := graphql.NewSchema(schemaConfig)
+	)
+
+	schema, err := graphql.NewSchema(
+		graphql.SchemaConfig{
+			Query: queryType,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
