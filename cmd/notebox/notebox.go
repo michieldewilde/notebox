@@ -24,15 +24,16 @@ type server struct {
 
 func main() {
 	addrFlag := flag.String("http", "0.0.0.0:80", "HTTP address notebox will be exposed on")
+	dbFlag := flag.String("db", "5432", "Port that the database can be accessed")
 	flag.Parse()
 
-	if err := run(os.Stdout, *addrFlag); err != nil {
+	if err := run(os.Stdout, *addrFlag, *dbFlag); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(exitFail)
 	}
 }
 
-func run(stdout io.Writer, addr string) error {
+func run(stdout io.Writer, addr string, db string) error {
 	s := &server{
 		router: mux.NewRouter(),
 	}
