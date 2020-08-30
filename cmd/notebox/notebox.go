@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -21,15 +22,17 @@ type server struct {
 	schema *graphql.Schema
 }
 
-// TODO: parse port flag
 func main() {
-	if err := run(os.Stdout); err != nil {
+	addrFlag := flag.String("http", "0.0.0.0:80", "HTTP address notebox will be exposed on")
+	flag.Parse()
+
+	if err := run(os.Stdout, *addrFlag); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(exitFail)
 	}
 }
 
-func run(stdout io.Writer) error {
+func run(stdout io.Writer, addr string) error {
 	s := &server{
 		router: mux.NewRouter(),
 	}
@@ -37,7 +40,7 @@ func run(stdout io.Writer) error {
 	s.registerSchema()
 	s.registerRoutes()
 
-	return s.listenAndServe(80)
+	return s.listenAndServe(addr)
 }
 
 func (s *server) registerRoutes() {
@@ -64,8 +67,7 @@ func (s *server) handleGraphiql(r string) http.Handler {
 	return graphqlbackend.HandleGraphiql(r)
 }
 
-func (s *server) listenAndServe(p int) error {
-	addr := fmt.Sprintf("0.0.0.0:%d", p)
+func (s *server) listenAndServe(addr string) error {
 	srv := &http.Server{
 		Handler:      s.router,
 		Addr:         addr,
