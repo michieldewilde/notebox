@@ -9,4 +9,4 @@ RUN go install -v ./...
 
 EXPOSE 80/tcp
 
-CMD ["notebox", "-p", "80"]
+CMD notebox -http 0.0.0.0:80 -datasource test

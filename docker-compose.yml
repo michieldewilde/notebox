@@ -1,11 +1,25 @@
-version: '3'
+version: '3.1'
 services:
   notebox:
     build:
       context: ./
-      dockerfile: Dockerfile.dev
+      dockerfile: .dev/Dockerfile
     volumes:
       - ./:/app
     working_dir: /app
+    environment:
+      - DATASOURCE=postgres://localhost:${DB_PORT}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}
+      - HTTP_ADDR=0.0.0.0:80
     ports:
-      - 8080:80
+      - 8000:80
+    depends_on:
+      - db
+  db:
+    image: postgres:12.4
+    restart: always
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 5432:5432
