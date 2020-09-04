@@ -12,7 +12,7 @@ BINARY_NAME=notebox
 all: test build
 
 build:
-				$(GOBUILD) -o bin/$(BINARY_NAME)  cmd/notebox/notebox.go
+				$(GOBUILD) -o bin/$(BINARY_NAME) ./...
 
 .PHONY: clean
 clean:
@@ -23,8 +23,9 @@ clean:
 test:
 				$(GOTEST) -v ./...
 
+.PHONY: run
 run:
-				$(GORUN) cmd/notebox/notebox.go
+				$(GORUN) cmd/notebox/**
 
 get:
 				$(GOGET)  -d -v ./...
